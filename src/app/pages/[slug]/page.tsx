@@ -25,7 +25,7 @@ function parseMarkdown(md: string): string {
   let inList = false;
 
   for (const raw of lines) {
-    const line = raw;
+    const line = raw.trim();
 
     const h2 = line.match(/^## (.+)$/);
     if (h2) {
@@ -84,9 +84,9 @@ export default async function PageDetail({ params }: { params: Promise<{ slug: s
           <div className="mb-6 animate-fade-in-up">
             <a
               href="/pages"
-              className="inline-flex items-center gap-1.5 text-xs font-mono tracking-widest uppercase text-gray-400 dark:text-gray-500 hover:text-[var(--accent-color)] transition-colors duration-200"
+              className="inline-flex items-center gap-2 rounded-full border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-sm font-semibold text-neutral-600 dark:text-neutral-300 hover:text-[var(--accent-color)] hover:border-[var(--accent-color)] hover:-translate-x-0.5 transition-all duration-200"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M15 6l-6 6 6 6" />
               </svg>

@@ -82,19 +82,16 @@ export type EngineeringPage = {
   
     //////////////////////////////////////////////////////////////////
     // Home Page — Hero Section
-    // Controls: greeting, name prefix, and CTA button labels in Hero.
+    // Controls: name prefix and CTA button labels in Hero.
     // namePrefix is the text before the accent-colored name ("I'm").
     // buttons.primary triggers the PDF resume download.
-    // buttons.secondary links to /pages.
     // Dependency: Hero.astro.
     //////////////////////////////////////////////////////////////////
-  
+
     hero: {
-      greeting: "Hello! 👋",
       namePrefix: "I'm",
       buttons: {
-        primary: "Download resume",
-        secondary: "Explore pages",
+        primary: "View Projects",
         resume: "Download resume",
         resumeLoading: "Generating PDF...",
       },
@@ -148,7 +145,7 @@ export type EngineeringPage = {
           name: "Automated Asset Inventory Workflow",
           description:
             "An event-driven n8n data orchestration pipeline aggregating, transforming, and syncing dynamic hardware and software inventory allocations. Reconciles device data from an RMM platform, HR records, and IT sheets via a 5-branch parallel index build, applying hybrid source-of-truth rules per field. Outputs structured inventory records to a database, a spreadsheet, and a Prometheus Pushgateway for Grafana dashboarding — with automated floor plan diffing and health score computation.",
-          link: "#",
+          link: "",
           pageSlug: "automated-asset-inventory-workflow",
           skills: ["n8n", "REST API", "Google Sheets", "NocoDB", "Prometheus", "JavaScript"],
         },
@@ -156,7 +153,7 @@ export type EngineeringPage = {
           name: "FarmBot — Render Farm Status Engine",
           description:
             "An n8n automation engine polling a distributed render farm via Prometheus exporters on a 3-minute cron cycle. Processes slash commands from a chat platform through a Google Apps Script bridge and dispatches rich status cards with binary severity classification. Supports on-demand reports, scheduled window broadcasts, and automated overnight file delivery via SSH and cloud storage.",
-          link: "#",
+          link: "",
           pageSlug: "farmbot-render-farm-status-engine",
           skills: ["n8n", "Google Apps Script", "Prometheus", "SSH", "Google Drive", "JavaScript"],
         },
@@ -164,7 +161,7 @@ export type EngineeringPage = {
           name: "Morningbot — Infrastructure Telemetry Reporter",
           description:
             "A chronological telemetry reporter dispatching daily infrastructure health snapshots, system metrics, and operations digests. Triggers via cron at 08:30, fetches non-closed support tickets from a ticketing API via OAuth2, and computes SLA risk scores, technician workload rankings, and customer distribution. Formats a structured Markdown digest and delivers it to a Microsoft Teams channel through a Power Automate webhook.",
-          link: "#",
+          link: "",
           pageSlug: "morningbot-infrastructure-telemetry-reporter",
           skills: ["n8n", "OAuth2", "Power Automate", "Microsoft Teams", "JavaScript", "REST API"],
         },
@@ -172,7 +169,7 @@ export type EngineeringPage = {
           name: "Wiki Automated PDF Exporter",
           description:
             "A document lifecycle pipeline converting Wiki.js pages to self-contained PDFs via GraphQL ingestion, differential processing, and Gotenberg rendering. Diffs page timestamps against a JSON cache to process only modified entries, base64-embeds all referenced images, renders branded self-contained HTML, and syncs compiled PDFs to cloud storage. Performs atomic cache writes with backup-then-swap to prevent corruption on failure.",
-          link: "#",
+          link: "",
           pageSlug: "wiki-automated-pdf-exporter",
           skills: ["n8n", "Wiki.js", "GraphQL", "Gotenberg", "Google Drive", "SSH", "PDF"],
         },
@@ -180,7 +177,7 @@ export type EngineeringPage = {
           name: "Automated Worker Recovery System",
           description:
             "A self-healing watchdog automation layer detecting stalled render farm nodes via NinjaOne polling and executing targeted reboots through a dual-credential segregation model. Applies a dual-condition AND gate — requiring both a confirmed stall state and a validated session identity — before issuing any reboot command. Offline nodes are routed to a skip branch and logged in an HTML recovery report.",
-          link: "#",
+          link: "",
           pageSlug: "automated-worker-recovery-system",
           skills: ["n8n", "NinjaOne RMM", "JavaScript", "OAuth2", "Automation", "Infrastructure"],
         },
@@ -188,7 +185,7 @@ export type EngineeringPage = {
           name: "WoL Service — Multi-Client Deployment",
           description:
             "A Bash-driven Wake-on-LAN proxy service on Ubuntu Server managed by NinjaOne RMM. Runs ping health sweeps against a CSV-configured device pool on a 5-minute cron interval, broadcasts UDP magic packets to offline nodes, waits for boot, verifies recovery, and logs results with structured JSON output. Includes a full deployment blueprint with GPO-enforced BIOS and NIC configuration for Windows 11 workstations.",
-          link: "#",
+          link: "",
           pageSlug: "wake-on-lan-multi-client-deployment",
           skills: ["Bash", "Wake-on-LAN", "NinjaOne RMM", "Network Automation", "Linux", "Ubuntu"],
         },
@@ -196,7 +193,7 @@ export type EngineeringPage = {
           name: "Automated WoL Service Workflow",
           description:
             "An n8n workflow automating Wake-on-LAN recovery for offline infrastructure nodes on a 10-minute polling interval. Runs SSH-driven ping health checks, evaluates offline state via binary routing, broadcasts UDP magic packets, waits for boot, executes post-boot verification, and delivers a structured HTML recovery report via email. Terminates in sub-second time with no broadcast sent when all nodes are online.",
-          link: "#",
+          link: "",
           pageSlug: "automated-wol-service-workflow",
           skills: ["n8n", "Bash", "SSH", "Wake-on-LAN", "Linux", "Automation"],
         },
@@ -204,7 +201,7 @@ export type EngineeringPage = {
           name: "Licenses Dashboard — Foundry & Houdini",
           description:
             "A Grafana dashboard infrastructure providing unified telemetry across Foundry and Houdini license pools. Tracks allocation density, per-seat utilization, and per-pool expiration thresholds with expiry-keyed colorization. Features an active sessions table for real-time per-artist and per-workstation license checkout tracing across all product pools.",
-          link: "#",
+          link: "",
           pageSlug: "licenses-dashboard-foundry-houdini",
           skills: ["Grafana", "Prometheus", "Dashboard", "License Management"],
         },
@@ -212,7 +209,7 @@ export type EngineeringPage = {
           name: "Licenses Exporter — Foundry & Houdini",
           description:
             "Parallel Python micro-services fetching license telemetry from remote Foundry and Houdini licensing engines via isolated SSH bridges with forced-command key restrictions. Parses licensing output into labeled Prometheus metrics on local HTTP endpoints, with background-threaded polling and full registry clear cycles to prevent stale metric contamination.",
-          link: "#",
+          link: "",
           pageSlug: "licenses-exporter-foundry-houdini",
           skills: ["Python", "Flask", "Prometheus", "SSH", "Linux"],
         },
@@ -220,7 +217,7 @@ export type EngineeringPage = {
           name: "IT Assets Dashboard",
           description:
             "A public-facing Grafana dashboard delivering real-time workstation inventory, contract expiration tracking, critical disk usage alerts, and hardware demographic distributions across a production fleet. Backed by Prometheus metrics pushed from an asset inventory workflow, with a vanity URL via Nginx Proxy Manager and threshold-driven urgency colorization for expiring contracts and high-risk disk volumes.",
-          link: "#",
+          link: "",
           pageSlug: "it-assets-dashboard",
           skills: ["Grafana", "Prometheus", "Nginx", "Infrastructure Monitoring"],
         },
@@ -228,7 +225,7 @@ export type EngineeringPage = {
           name: "Farm1 Temperature & Power Monitoring",
           description:
             "An HPE OneView REST API telemetry pipeline pushing thermal and power metrics from enterprise blade servers to Prometheus Pushgateway via a session-cached systemd timer. Evolved from a Flask exporter that exceeded per-client session limits to a push architecture running 4 fetches per day with persistent cached session tokens, eliminating session limit risk entirely.",
-          link: "#",
+          link: "",
           pageSlug: "farm1-temperature-power-monitoring",
           skills: ["Python", "HPE OneView", "Prometheus", "Grafana", "systemd", "REST API"],
         },
@@ -236,7 +233,7 @@ export type EngineeringPage = {
           name: "Farm2 Temperature & Reboot Monitoring",
           description:
             "An out-of-band IPMI telemetry pipeline covering 16 render nodes across two BMC VLANs, tracking CPU temperatures and SEL reboot events via parallel Python exporters scraped by Prometheus. Resolved VLAN reachability by deploying a tagged virtual NIC in bridge mode, enabling full fleet visibility with NaN suppression via PromQL reachability gating.",
-          link: "#",
+          link: "",
           pageSlug: "farm2-temperature-reboot-monitoring",
           skills: ["Python", "IPMI", "Prometheus", "Grafana", "Linux", "Networking"],
         },
@@ -244,7 +241,7 @@ export type EngineeringPage = {
           name: "Random Secure Friendly Password",
           description:
             "An interactive Python Flask web service generating high-entropy human-readable passphrases using Python's secrets library. Exposes a clean browser UI and a structured JSON API producing passphrases from curated vocabulary with randomized separators and numeric suffixes. Deployed as a persistent systemd daemon behind a TLS-terminating reverse proxy with access restricted to authorized internal network clients.",
-          link: "#",
+          link: "",
           pageSlug: "random-secure-friendly-password",
           skills: ["Python", "Flask", "Gunicorn", "Nginx", "Tailwind CSS", "Security"],
         },
@@ -252,7 +249,7 @@ export type EngineeringPage = {
           name: "Compact Image GUI Tool",
           description:
             "A desktop Python application for high-efficiency batch image optimization and format transcoding. Built with CustomTkinter and Pillow, it provides a clean native UI for selecting source and destination folders, real-time progress tracking, and multi-threaded batch conversion of PNG, BMP, and TIFF images to compressed JPEG output with per-run savings summaries.",
-          link: "#",
+          link: "",
           pageSlug: "compact-image-gui-tool",
           skills: ["Python", "CustomTkinter", "Pillow", "Threading", "Desktop GUI"],
         },
@@ -269,6 +266,13 @@ export type EngineeringPage = {
             "An interactive character-guessing game built on the Rick and Morty REST API. Fetches randomized character data asynchronously, dynamically renders character cards, and challenges players to identify characters from the show. Features score tracking, streak mechanics, and progressive difficulty driven by client-side state management.",
           link: "https://github.com/vicentemosqueralujan/rick-and-morty-guess-game",
           skills: ["JavaScript", "REST API", "CSS", "HTML"],
+        },
+        {
+          name: "NebulaPortfolio Template",
+          description:
+            "A premium, minimalist portfolio architecture featuring frosted glassmorphism elements, dynamic theme synchronization, and single-file data configurations. Optimized for open-source scaling.",
+          link: "https://github.com/vicentemosqueralujan/nebulaportfolio",
+          skills: ["Next.js", "TypeScript", "Tailwind CSS"],
         },
       ],
     },

@@ -26,6 +26,10 @@ Help users:
 5. **No hardcoded text in components.** All user-facing strings must originate from `src/config.ts`. Never write literal names, titles, or labels directly into component JSX.
 6. **Keep section spacing uniform.** Use the established section padding rhythm. Do not add ad-hoc margin/padding overrides that break vertical balance.
 7. **No structural clutter.** Do not reintroduce sidebar social layouts, macOS mockup decorations, or asymmetric card grids. The canonical layout is centered, streamlined, and minimal.
+8. **Single-column project layout.** `Projects.tsx` cards render one per line (stacked), never a multi-column grid.
+9. **Left-align action elements.** Conditional action links ("View source", "Read page") must be left-aligned and intrinsically sized, not centered or full-width, and must hide when their backing config field is empty.
+10. **Unified purple badge language.** Technology/skill badges in `About.tsx` and `Projects.tsx` share one purple-pill style driven by `var(--accent-color)` — do not fork badge styling per section.
+11. **Markdown wrapping in engineering pages.** Inline lists and prose in `[slug]/page.tsx` must wrap and indent consistently with surrounding text; do not let list items overflow or lose indentation on narrow viewports.
 
 ## Developer Execution Playbook
 
@@ -102,6 +106,10 @@ accentColorDark:  "#a855f7",  // used in dark mode
 ```
 
 Propagates automatically via `--accent-color` CSS custom property. No other files need editing.
+
+## Config Schema Notes
+
+`hero.greeting` and `hero.buttons.secondary` were removed from `src/config.ts` as dead fields — the Hero section no longer reads a separate greeting string or a secondary CTA button. Do not reintroduce them; `hero` only defines `namePrefix` and `buttons.{primary,resume,resumeLoading}`.
 
 ## Dark / Light Mode
 

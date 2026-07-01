@@ -45,6 +45,15 @@ All personal content, theme colors, and layout flags live in `src/config.ts` —
 
 ---
 
+## UI Conventions
+
+- **Project cards**: single-column, one-per-line stack layout — no grid — for a sleek, scannable read on all viewport widths.
+- **Action links**: "View source" and "Read page" render left-aligned and intrinsically sized (not full-width buttons); each hides automatically when its underlying data field (`repoUrl` / `pageSlug`) is empty.
+- **Technology badges**: cohesive purple-pill styling, shared between the "About Me" skills list and the "Projects" tech tags, using `var(--accent-color)`-based tinting.
+- **Subpage navigation**: the return-to-pages link on `/pages/[slug]` is enlarged and left-aligned for high visibility; inline markdown lists wrap and indent consistently with the surrounding prose.
+
+---
+
 ## Project Structure
 
 ```
