@@ -19,12 +19,43 @@ function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 function parseMarkdown(md: string): string {
   const lines = md.split("\n");
   const output: string[] = [];
   let inList = false;
+  let inCodeBlock = false;
+  let codeBlockLang = "";
+  let codeBlockLines: string[] = [];
 
   for (const raw of lines) {
+    const fence = raw.trim().match(/^```(\w*)$/);
+    if (fence) {
+      if (inCodeBlock) {
+        const langClass = codeBlockLang ? ` class="language-${codeBlockLang}"` : "";
+        output.push(`<pre><code${langClass}>${escapeHtml(codeBlockLines.join("\n"))}</code></pre>`);
+        codeBlockLines = [];
+        codeBlockLang = "";
+        inCodeBlock = false;
+      } else {
+        if (inList) { output.push("</ul>"); inList = false; }
+        inCodeBlock = true;
+        codeBlockLang = fence[1];
+      }
+      continue;
+    }
+
+    if (inCodeBlock) {
+      codeBlockLines.push(raw);
+      continue;
+    }
+
     const line = raw.trim();
 
     const h2 = line.match(/^## (.+)$/);
@@ -63,6 +94,10 @@ function parseMarkdown(md: string): string {
   }
 
   if (inList) output.push("</ul>");
+  if (inCodeBlock) {
+    const langClass = codeBlockLang ? ` class="language-${codeBlockLang}"` : "";
+    output.push(`<pre><code${langClass}>${escapeHtml(codeBlockLines.join("\n"))}</code></pre>`);
+  }
 
   return output.join("\n");
 }
