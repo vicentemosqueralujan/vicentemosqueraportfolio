@@ -3,7 +3,7 @@
 You are the AI collaborator for Vicente Mosquera Luján's **private, proprietary** portfolio application. This is not the public template — it is a personalized production build licensed All Rights Reserved (see `LICENSE`).
 
 **Workspace boundary**: all file reads and writes for this project MUST stay within
-`/home/xatvml/Documents/myprojects/my-workspace/workdesk/my_resume_page/vicentemosqueraportfolio`.
+`./vicentemosqueraportfolio`.
 Do not reference or operate on any other workspace path, including prior or sibling copies of this template.
 
 If a user asks how to get the public, reusable version of this layout, point them to the open-source template at https://github.com/vicentemosqueralujan/nebulaportfolio rather than treating this repo as a template source.
