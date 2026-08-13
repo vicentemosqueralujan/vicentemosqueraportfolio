@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { siteConfig } from "@/config";
 import DownloadResumeButton from "@/components/DownloadResumeButton";
 
@@ -36,66 +37,87 @@ export default function Hero() {
       id="hero"
       className="relative isolate flex justify-center overflow-hidden"
     >
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 pt-20 pb-8 text-center">
-        <h1 className="animate-fade-in-up text-5xl sm:text-6xl md:text-8xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 leading-[1.05] mb-5">
-          {hero.namePrefix}{" "}
-          <span className="hero-name">
-            {name}
-          </span>
-        </h1>
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 pt-20 pb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-12 md:gap-16">
+          {/* Intro text */}
+          <div className="flex-1 text-center md:text-left">
+            <h1 className="animate-fade-in-up text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 leading-[1.05] mb-5">
+              {hero.namePrefix}{" "}
+              <span className="hero-name">
+                {name}
+              </span>
+            </h1>
 
-        <p className="animate-fade-in-up animate-fade-in-up-d1 text-base sm:text-lg md:text-xl text-neutral-500 dark:text-neutral-400 max-w-lg mx-auto mb-10 leading-relaxed">
-          {title}
-        </p>
+            <p className="animate-fade-in-up animate-fade-in-up-d1 text-base sm:text-lg md:text-xl text-neutral-500 dark:text-neutral-400 max-w-lg mx-auto md:mx-0 mb-10 leading-relaxed">
+              {title}
+            </p>
 
-        {/* CTA buttons */}
-        <div className="animate-fade-in-up animate-fade-in-up-d2 flex flex-wrap items-center justify-center gap-3 mb-10">
-          <a
-            href="/#projects"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold text-white tracking-wide transition-all duration-200 hover:opacity-90 hover:-translate-y-px active:translate-y-0 shadow-lg"
-            style={{
-              backgroundColor: "var(--accent-color)",
-              boxShadow: "0 8px 32px color-mix(in srgb, var(--accent-color) 50%, transparent), 0 2px 8px color-mix(in srgb, var(--accent-color) 25%, transparent)",
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <path d="M3 10h18" />
-              <path d="M10 3v18" />
-            </svg>
-            {hero.buttons.primary}
-          </a>
-          <DownloadResumeButton label={hero.buttons.resume} />
-        </div>
+            {/* CTA buttons */}
+            <div className="animate-fade-in-up animate-fade-in-up-d2 flex flex-wrap items-center justify-center md:justify-start gap-3 mb-10">
+              <a
+                href="/#projects"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold text-white tracking-wide transition-all duration-200 hover:opacity-90 hover:-translate-y-px active:translate-y-0 shadow-lg"
+                style={{
+                  backgroundColor: "var(--accent-color)",
+                  boxShadow: "0 8px 32px color-mix(in srgb, var(--accent-color) 50%, transparent), 0 2px 8px color-mix(in srgb, var(--accent-color) 25%, transparent)",
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <path d="M3 10h18" />
+                  <path d="M10 3v18" />
+                </svg>
+                {hero.buttons.primary}
+              </a>
+              <DownloadResumeButton label={hero.buttons.resume} />
+            </div>
 
-        {/* Social icons — centered horizontal row */}
-        <div className="animate-fade-in-up animate-fade-in-up-d3 flex items-center justify-center gap-3">
-          <a
-            href={`mailto:${social.email}`}
-            aria-label={social.aria.email}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
-          >
-            <EmailIcon />
-          </a>
-          <a
-            href={social.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={social.aria.linkedin}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
-          >
-            <LinkedInIcon />
-          </a>
-          <a
-            href={social.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={social.aria.github}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
-          >
-            <GitHubIcon />
-          </a>
+            {/* Social icons */}
+            <div className="animate-fade-in-up animate-fade-in-up-d3 flex items-center justify-center md:justify-start gap-3">
+              <a
+                href={`mailto:${social.email}`}
+                aria-label={social.aria.email}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <EmailIcon />
+              </a>
+              <a
+                href={social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.aria.linkedin}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <LinkedInIcon />
+              </a>
+              <a
+                href={social.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.aria.github}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <GitHubIcon />
+              </a>
+            </div>
+          </div>
+
+          {/* Portrait */}
+          {hero.image && (
+            <div className="animate-fade-in-scale animate-fade-in-up-d1 flex-shrink-0 flex justify-center md:justify-end">
+              <div className="hero-portrait w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80">
+                <Image
+                  src={hero.image}
+                  alt={hero.imageAlt}
+                  width={320}
+                  height={320}
+                  priority
+                  className="relative z-10 w-full h-full object-contain drop-shadow-2xl"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

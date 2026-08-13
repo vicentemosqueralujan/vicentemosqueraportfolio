@@ -98,6 +98,41 @@ body {
 .animate-fade-in-up-d4 { animation-delay: 0.4s; }
 .animate-fade-in-up-d5 { animation-delay: 0.5s; }
 
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Hero portrait — ambient glow + gentle float */
+@keyframes portrait-glow-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
+}
+
+@keyframes portrait-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.hero-portrait {
+  position: relative;
+  animation: portrait-float 7s ease-in-out infinite;
+}
+
+.hero-portrait::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 45%, transparent) 0%, transparent 70%);
+  filter: blur(48px);
+  z-index: -1;
+  animation: portrait-glow-pulse 6s ease-in-out infinite;
+}
+
 /* Prose content (used in /pages/[slug]) */
 .prose-content {
   color: rgb(75 85 99);

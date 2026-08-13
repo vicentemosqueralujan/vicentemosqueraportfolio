@@ -90,6 +90,8 @@ export type EngineeringPage = {
 
     hero: {
       namePrefix: "I'm",
+      image: "/vicente.png",
+      imageAlt: "Portrait of Vicente Mosquera Luján",
       buttons: {
         primary: "View Projects",
         resume: "Download resume",
