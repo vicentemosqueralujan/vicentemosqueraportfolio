@@ -38,7 +38,7 @@ export default function Hero() {
       className="relative isolate flex justify-center overflow-hidden"
     >
       <div className="relative z-10 w-full max-w-5xl mx-auto px-6 pt-20 pb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-12 md:gap-16">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-12 md:gap-16">
           {/* Intro text */}
           <div className="flex-1 text-center md:text-left">
             <h1 className="animate-fade-in-up text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 leading-[1.05] mb-5">
@@ -105,7 +105,7 @@ export default function Hero() {
 
           {/* Portrait */}
           {hero.image && (
-            <div className="animate-fade-in-scale animate-fade-in-up-d1 flex-shrink-0 flex justify-center md:justify-end">
+            <div className="flex-shrink-0 flex justify-center md:justify-end self-center md:self-end">
               <div className="hero-portrait w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80">
                 <Image
                   src={hero.image}
