@@ -15,7 +15,7 @@ export type EngineeringPage = {
   //////////////////////////////////////////////////////////////////
   
   export const siteConfig = {
-    name: "Vicente Mosquera Luján",
+    name: "Vicente Mosquera",
     title: "Systems Administrator | IT Automation",
   
     //////////////////////////////////////////////////////////////////
@@ -59,6 +59,7 @@ export type EngineeringPage = {
       aria: {
         toggleTheme: "Toggle theme",
         toggleMenu: "Toggle navigation menu",
+        toggleLanguage: "Switch language",
       },
     },
   
@@ -91,7 +92,7 @@ export type EngineeringPage = {
     hero: {
       namePrefix: "I'm",
       image: "/vicente.png",
-      imageAlt: "Portrait of Vicente Mosquera Luján",
+      imageAlt: "Portrait of Vicente Mosquera",
       buttons: {
         primary: "View Projects",
         resume: "Download resume",

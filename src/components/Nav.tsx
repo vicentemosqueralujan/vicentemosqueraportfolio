@@ -1,8 +1,10 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { siteConfig } from "@/config";
+import { useLanguage } from "@/context/LanguageContext";
+import { locales } from "@/i18n/translations";
 
-const { navigation, projects, experience, education } = siteConfig;
+const { projects, experience, education } = siteConfig;
 const hasProjects = projects.items.length > 0;
 const hasExperience = experience.items.length > 0;
 const hasEducation = education.items.length > 0;
@@ -52,7 +54,9 @@ function MenuIcon({ open }: { open: boolean }) {
 }
 
 export default function Nav() {
-  const [isDark, setIsDark] = useState(false);
+  const { locale, setLocale, t } = useLanguage();
+  const { navigation } = t;
+  const [isDark, setIsDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -80,6 +84,11 @@ export default function Nav() {
   }, [isDark]);
 
   const closeMenu = () => setMenuOpen(false);
+
+  const cycleLocale = useCallback(() => {
+    const nextIndex = (locales.indexOf(locale) + 1) % locales.length;
+    setLocale(locales[nextIndex]);
+  }, [locale, setLocale]);
 
   const navLinks = [
     { href: "/#hero", label: navigation.home },
@@ -124,6 +133,15 @@ export default function Nav() {
                 {isDark ? <SunIcon /> : <MoonIcon />}
               </button>
             </li>
+            <li>
+              <button
+                onClick={cycleLocale}
+                aria-label={navigation.aria.toggleLanguage}
+                className="w-8 h-8 flex items-center justify-center rounded-full text-[11px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-all duration-200"
+              >
+                {locale.toUpperCase()}
+              </button>
+            </li>
           </ul>
 
           {/* Mobile controls */}
@@ -134,6 +152,13 @@ export default function Nav() {
               className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100/60 dark:hover:bg-neutral-800/50 transition-all duration-200"
             >
               {isDark ? <SunIcon /> : <MoonIcon />}
+            </button>
+            <button
+              onClick={cycleLocale}
+              aria-label={navigation.aria.toggleLanguage}
+              className="w-8 h-8 flex items-center justify-center rounded-full text-[11px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100/60 dark:hover:bg-neutral-800/50 transition-all duration-200"
+            >
+              {locale.toUpperCase()}
             </button>
             <button
               onClick={() => setMenuOpen((o) => !o)}
