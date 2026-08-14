@@ -92,7 +92,7 @@ export default function Projects() {
         <div className="grid grid-cols-1 gap-4">
           {projects.items.map((project, i) => (
             <ProjectCard
-              key={project.name}
+              key={i}
               project={project}
               index={i}
               sourceCodeLabel={projects.sourceCodeLabel}

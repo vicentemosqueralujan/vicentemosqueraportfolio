@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { siteConfig, content } from "@/config";
-import { defaultLocale } from "@/i18n/translations";
 import ScrollReveal from "@/components/ScrollReveal";
 import ScrollToTop from "@/components/ScrollToTop";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -8,7 +7,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: siteConfig.name,
-  description: content[defaultLocale].seo.description,
+  description: content.seo.description,
   icons: {
     icon: "/icon.svg",
   },

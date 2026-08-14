@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { locales } from "@/i18n/translations";
+import { locales, localeLabels } from "@/i18n/translations";
 
 function SunIcon() {
   return (
@@ -56,6 +56,9 @@ export default function Nav() {
   const [isDark, setIsDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const desktopLangMenuRef = useRef<HTMLLIElement>(null);
+  const mobileLangMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains("dark"));
@@ -82,10 +85,24 @@ export default function Nav() {
 
   const closeMenu = () => setMenuOpen(false);
 
-  const cycleLocale = useCallback(() => {
-    const nextIndex = (locales.indexOf(locale) + 1) % locales.length;
-    setLocale(locales[nextIndex]);
-  }, [locale, setLocale]);
+  useEffect(() => {
+    if (!langMenuOpen) return;
+    const onOutsideClick = (e: MouseEvent) => {
+      const target = e.target as Node;
+      const insideDesktop = desktopLangMenuRef.current?.contains(target);
+      const insideMobile = mobileLangMenuRef.current?.contains(target);
+      if (!insideDesktop && !insideMobile) {
+        setLangMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onOutsideClick);
+    return () => document.removeEventListener("mousedown", onOutsideClick);
+  }, [langMenuOpen]);
+
+  const selectLocale = useCallback((next: typeof locale) => {
+    setLocale(next);
+    setLangMenuOpen(false);
+  }, [setLocale]);
 
   const navLinks = [
     { href: "/#hero", label: navigation.home },
@@ -130,14 +147,34 @@ export default function Nav() {
                 {isDark ? <SunIcon /> : <MoonIcon />}
               </button>
             </li>
-            <li>
+            <li className="relative" ref={desktopLangMenuRef}>
               <button
-                onClick={cycleLocale}
+                onClick={() => setLangMenuOpen((o) => !o)}
                 aria-label={navigation.aria.toggleLanguage}
-                className="w-8 h-8 flex items-center justify-center rounded-full text-[11px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-all duration-200"
+                aria-expanded={langMenuOpen}
+                className="h-8 px-2.5 flex items-center justify-center rounded-full text-[11px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-all duration-200"
               >
                 {locale.toUpperCase()}
               </button>
+              {langMenuOpen && (
+                <ul className="absolute right-0 top-full mt-2 min-w-[9rem] py-1.5 rounded-xl bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border border-neutral-200/70 dark:border-neutral-700/50 shadow-lg overflow-hidden">
+                  {locales.map((code) => (
+                    <li key={code}>
+                      <button
+                        onClick={() => selectLocale(code)}
+                        className={`w-full flex items-center justify-between gap-2 px-3.5 py-2 text-sm text-left transition-colors duration-150 ${
+                          code === locale
+                            ? "text-[var(--accent-color)] font-semibold"
+                            : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60"
+                        }`}
+                      >
+                        <span>{localeLabels[code]}</span>
+                        {code === locale && <span aria-hidden="true">✓</span>}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           </ul>
 
@@ -150,13 +187,35 @@ export default function Nav() {
             >
               {isDark ? <SunIcon /> : <MoonIcon />}
             </button>
-            <button
-              onClick={cycleLocale}
-              aria-label={navigation.aria.toggleLanguage}
-              className="w-8 h-8 flex items-center justify-center rounded-full text-[11px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100/60 dark:hover:bg-neutral-800/50 transition-all duration-200"
-            >
-              {locale.toUpperCase()}
-            </button>
+            <div className="relative" ref={mobileLangMenuRef}>
+              <button
+                onClick={() => setLangMenuOpen((o) => !o)}
+                aria-label={navigation.aria.toggleLanguage}
+                aria-expanded={langMenuOpen}
+                className="h-8 px-2.5 flex items-center justify-center rounded-full text-[11px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100/60 dark:hover:bg-neutral-800/50 transition-all duration-200"
+              >
+                {locale.toUpperCase()}
+              </button>
+              {langMenuOpen && (
+                <ul className="absolute right-0 top-full mt-2 min-w-[9rem] py-1.5 rounded-xl bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border border-neutral-200/70 dark:border-neutral-700/50 shadow-lg overflow-hidden z-50">
+                  {locales.map((code) => (
+                    <li key={code}>
+                      <button
+                        onClick={() => selectLocale(code)}
+                        className={`w-full flex items-center justify-between gap-2 px-3.5 py-2 text-sm text-left transition-colors duration-150 ${
+                          code === locale
+                            ? "text-[var(--accent-color)] font-semibold"
+                            : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60"
+                        }`}
+                      >
+                        <span>{localeLabels[code]}</span>
+                        {code === locale && <span aria-hidden="true">✓</span>}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <button
               onClick={() => setMenuOpen((o) => !o)}
               aria-label={navigation.aria.toggleMenu}

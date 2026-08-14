@@ -1,17 +1,26 @@
 "use client";
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { Locale, defaultLocale, locales, translations } from "@/i18n/translations";
+import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
+import { Locale, defaultLocale, locales, baseContent, LocaleContent } from "@/i18n/translations";
+import { translateContent } from "@/i18n/translate";
 
 type LanguageContextValue = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (typeof translations)[Locale];
+  t: LocaleContent;
+  isTranslating: boolean;
 };
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+  // Always start from the English base so content is never blank/partial —
+  // a locale switch shows English until its translation resolves, then
+  // swaps in place. This is what keeps sections (e.g. Projects) from ever
+  // disappearing mid-switch.
+  const [t, setT] = useState<LocaleContent>(baseContent);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const requestId = useRef(0);
 
   useEffect(() => {
     try {
@@ -26,6 +35,28 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = locale;
+
+    if (locale === "en") {
+      setT(baseContent);
+      setIsTranslating(false);
+      return;
+    }
+
+    const thisRequest = ++requestId.current;
+    setIsTranslating(true);
+    translateContent(baseContent, locale)
+      .then((translated) => {
+        // Ignore stale responses from a locale the user has since switched
+        // away from.
+        if (requestId.current === thisRequest) {
+          setT(translated);
+        }
+      })
+      .finally(() => {
+        if (requestId.current === thisRequest) {
+          setIsTranslating(false);
+        }
+      });
   }, [locale]);
 
   const setLocale = (next: Locale) => {
@@ -38,7 +69,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t: translations[locale] }}>
+    <LanguageContext.Provider value={{ locale, setLocale, t, isTranslating }}>
       {children}
     </LanguageContext.Provider>
   );
