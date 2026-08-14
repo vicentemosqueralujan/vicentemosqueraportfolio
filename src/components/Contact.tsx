@@ -12,9 +12,34 @@ export default function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateField = (field: "name" | "email" | "message", value: string): string | undefined => {
+    const v = contact.form.validation;
+    if (field === "name") return value.trim() ? undefined : v.nameRequired;
+    if (field === "email") {
+      if (!value.trim()) return v.emailRequired;
+      return EMAIL_RE.test(value.trim()) ? undefined : v.emailInvalid;
+    }
+    return value.trim() ? undefined : v.messageRequired;
+  };
+
+  const handleBlur = (field: "name" | "email" | "message", value: string) => {
+    setErrors((prev) => ({ ...prev, [field]: validateField(field, value) }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const nextErrors = {
+      name: validateField("name", name),
+      email: validateField("email", email),
+      message: validateField("message", message),
+    };
+    setErrors(nextErrors);
+    if (nextErrors.name || nextErrors.email || nextErrors.message) return;
+
     const subject = encodeURIComponent(
       contact.form.emailSubjectTemplate.replace("{name}", name.trim())
     );
@@ -28,6 +53,7 @@ export default function Contact() {
     a.href = `mailto:${contactShared.toEmail}?subject=${subject}&body=${body}`;
     a.click();
     setName(""); setEmail(""); setMessage("");
+    setErrors({});
     setSent(true);
     setTimeout(() => setSent(false), 3000);
   };
@@ -53,8 +79,21 @@ export default function Contact() {
     },
   ].filter(Boolean) as { label: string; value: string; href: string; icon: string }[];
 
-  const inputCls = "w-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors duration-200";
+  const inputCls = (hasError: boolean) =>
+    `w-full bg-neutral-50 dark:bg-neutral-900 border rounded-xl px-4 py-3 text-sm text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none transition-colors duration-200 ${
+      hasError
+        ? "border-red-500 dark:border-red-500 focus:border-red-500"
+        : "border-neutral-200 dark:border-neutral-700 focus:border-[var(--accent-color)]"
+    }`;
   const labelCls = "text-xs font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400";
+  const errorCls = "flex items-center gap-1.5 text-xs font-medium text-red-500 dark:text-red-400";
+
+  const ErrorIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <circle cx="12" cy="12" r="9" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+  );
 
   return (
     <section id="contact" className="py-16 px-6">
@@ -64,18 +103,53 @@ export default function Contact() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="cf-name" className={labelCls}>{contact.form.nameLabel}</label>
-                <input id="cf-name" type="text" value={name} onChange={e => setName(e.target.value)} placeholder={contact.form.namePlaceholder} autoComplete="name" required className={inputCls} />
+                <input
+                  id="cf-name"
+                  type="text"
+                  value={name}
+                  onChange={e => { setName(e.target.value); if (errors.name) setErrors(prev => ({ ...prev, name: undefined })); }}
+                  onBlur={e => handleBlur("name", e.target.value)}
+                  placeholder={contact.form.namePlaceholder}
+                  autoComplete="name"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "cf-name-error" : undefined}
+                  className={inputCls(!!errors.name)}
+                />
+                {errors.name && <p id="cf-name-error" className={errorCls}><ErrorIcon />{errors.name}</p>}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="cf-email" className={labelCls}>{contact.form.emailLabel}</label>
-                <input id="cf-email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={contact.form.emailPlaceholder} autoComplete="email" required className={inputCls} />
+                <input
+                  id="cf-email"
+                  type="email"
+                  value={email}
+                  onChange={e => { setEmail(e.target.value); if (errors.email) setErrors(prev => ({ ...prev, email: undefined })); }}
+                  onBlur={e => handleBlur("email", e.target.value)}
+                  placeholder={contact.form.emailPlaceholder}
+                  autoComplete="email"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "cf-email-error" : undefined}
+                  className={inputCls(!!errors.email)}
+                />
+                {errors.email && <p id="cf-email-error" className={errorCls}><ErrorIcon />{errors.email}</p>}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="cf-message" className={labelCls}>{contact.form.messageLabel}</label>
-                <textarea id="cf-message" value={message} onChange={e => setMessage(e.target.value)} rows={5} placeholder={contact.form.messagePlaceholder} required className={`${inputCls} resize-none`} />
+                <textarea
+                  id="cf-message"
+                  value={message}
+                  onChange={e => { setMessage(e.target.value); if (errors.message) setErrors(prev => ({ ...prev, message: undefined })); }}
+                  onBlur={e => handleBlur("message", e.target.value)}
+                  rows={5}
+                  placeholder={contact.form.messagePlaceholder}
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? "cf-message-error" : undefined}
+                  className={`${inputCls(!!errors.message)} resize-none`}
+                />
+                {errors.message && <p id="cf-message-error" className={errorCls}><ErrorIcon />{errors.message}</p>}
               </div>
               <button
                 type="submit"

@@ -106,6 +106,12 @@ export type LocaleContent = {
       sentConfirmation: string;
       emailSubjectTemplate: string;
       emailBodyTemplate: string;
+      validation: {
+        nameRequired: string;
+        emailRequired: string;
+        emailInvalid: string;
+        messageRequired: string;
+      };
     };
     labels: {
       availability: string;
@@ -616,6 +622,12 @@ Queue and registry reads run with automatic retry and are configured to always o
       sentConfirmation: "Sent ✓",
       emailSubjectTemplate: "Project Inquiry from {name}",
       emailBodyTemplate: "Name: {name}\nEmail: {email}\n\nProject Details:\n{message}",
+      validation: {
+        nameRequired: "Please fill out this field",
+        emailRequired: "Please fill out this field",
+        emailInvalid: "Please enter a valid email address",
+        messageRequired: "Please fill out this field",
+      },
     },
     labels: {
       availability: "Availability",

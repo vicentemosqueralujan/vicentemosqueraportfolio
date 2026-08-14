@@ -73,12 +73,23 @@ src/
     Projects.tsx               ← Project cards grid with optional deep-dive links
     Experience.tsx             ← Work history timeline
     Education.tsx              ← Education cards
-    Contact.tsx                ← mailto contact form + info card
+    Contact.tsx                ← mailto contact form + info card (custom inline validation, see below)
     Footer.tsx                 ← Responsive footer
     Cursor.tsx                 ← Custom cursor (client)
     ScrollReveal.tsx           ← Scroll animations (client)
     TocNav.tsx                 ← Scroll-tracked ToC (client)
 ```
+
+---
+
+## Contact Form Validation
+
+`Contact.tsx` uses its own inline validation instead of native browser tooltips:
+
+- The `<form>` has `noValidate`, so the browser never shows its default validation bubbles.
+- Name, Email, and Project Details are validated on submit and on blur (`onBlur`); an error clears as soon as the user types again (`onChange`).
+- Errors render as a themed message directly below the field (red text + icon, red border highlight on the input), matching light/dark mode.
+- Error copy comes from `contact.form.validation` in `src/config.ts` (`nameRequired`, `emailRequired`, `emailInvalid`, `messageRequired`) and is localized like all other content — see the Localization section above.
 
 ---
 

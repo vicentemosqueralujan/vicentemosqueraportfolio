@@ -124,6 +124,18 @@ Server-rendered metadata (`generateMetadata`, `generateStaticParams` in `src/app
 
 `hero.greeting` and `hero.buttons.secondary` were removed from `src/config.ts` as dead fields — the Hero section no longer reads a separate greeting string or a secondary CTA button. Do not reintroduce them; `hero` only defines `namePrefix` and `buttons.{primary,resume,resumeLoading}`.
 
+`contact.form.validation` (`nameRequired`, `emailRequired`, `emailInvalid`, `messageRequired`) holds the localized inline-validation error strings consumed by `Contact.tsx` — see "Contact Form Validation" below. Add new validation copy here, not as literals in the component.
+
+## Contact Form Validation
+
+`Contact.tsx` implements its own inline validation instead of relying on native HTML5 tooltips:
+
+- The `<form>` sets `noValidate` so the browser never renders its default validation bubble UI.
+- Name, Email, and Project Details each validate on blur (`onBlur`) and on submit; a field's error clears the moment the user resumes typing in it (`onChange`).
+- Errors render as a `<p>` directly below the field — themed with `text-red-500`/`dark:text-red-400`, an inline warning icon, and a matching red border on the input — consistent with the light/dark design system rather than forking a separate style.
+- Email format is checked with a simple `@`/`.` regex in addition to the required-field check.
+- Error copy is never hardcoded in the component: it comes from `t.contact.form.validation` (English source in `src/config.ts`, auto-translated per locale like all other copy — see Localization Architecture above).
+
 ## Dark / Light Mode
 
 - Mode stored in `localStorage` under key `"theme"`.
