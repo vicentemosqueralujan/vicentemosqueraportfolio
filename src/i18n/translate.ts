@@ -23,7 +23,10 @@
 import type { LocaleContent } from "@/config";
 import type { Locale } from "./translations";
 
-const SKIP_KEYS = new Set(["slug", "pageSlug", "link", "id"]);
+// `skills` covers both the "About Me" skill tags (about.skills) and each
+// project's technology stack (projects.items[].skills) — technical skill
+// terms must stay in raw English across every locale, never machine-translated.
+const SKIP_KEYS = new Set(["slug", "pageSlug", "link", "id", "skills"]);
 const CACHE_VERSION = "v1";
 const memoryCache = new Map<string, LocaleContent>();
 

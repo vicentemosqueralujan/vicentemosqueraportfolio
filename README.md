@@ -43,6 +43,8 @@ npm run start   # serve production build locally
 
 All personal content, theme colors, and layout flags live in `src/config.ts` — the single source of truth for this site. No component edits are needed for content or color changes.
 
+Content is authored once, in English, and machine-translated at runtime for every other locale (ES, CA, FR, ZH) — see `src/i18n/translate.ts`. Technical skill terms and technology tags are the exception: `about.skills` (the "About Me" skill list) and each project's `skills` array always stay in raw English across all locales, since terms like "Docker" or "Kubernetes" shouldn't be translated. This is enforced by `SKIP_KEYS` in `src/i18n/translate.ts`, not per-component logic.
+
 ---
 
 ## UI Conventions

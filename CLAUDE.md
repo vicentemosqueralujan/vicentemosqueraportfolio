@@ -127,6 +127,17 @@ Switching locale (via the navbar language switcher) calls `setLocale`, which upd
 
 Server-rendered metadata (`generateMetadata`, `generateStaticParams` in `src/app/pages/[slug]/page.tsx` and elsewhere) runs outside the client `LanguageProvider` and has no access to the active locale, so it always defaults to the English strings for SEO purposes (page titles, descriptions).
 
+Non-English locales are produced automatically at runtime by `translateContent()` in `src/i18n/translate.ts`, which walks the English `LocaleContent` tree and machine-translates each string leaf. `SKIP_KEYS` in that file (`slug`, `pageSlug`, `link`, `id`, `skills`) lists keys whose values are routed around translation and returned verbatim.
+
+### Untranslated Technical Skills
+
+Technical skill terms and technology tags must always stay in raw English, regardless of the active language (EN, ES, CA, FR, ZH):
+
+- `about.skills` — the "About Me" section's skill tags (e.g. Active Directory, Docker, Kubernetes, Terraform, Python, Windows Server).
+- `projects.items[].skills` — each project's technology stack in `src/config.ts`.
+
+Both are covered by the `"skills"` entry in `SKIP_KEYS` (`src/i18n/translate.ts`), so `translateNode()` never sends these arrays to the MT API. All other descriptive text — headings, body copy, project descriptions — remains fully localized. When adding new skill/tag arrays to the content tree, key them `skills` (or extend `SKIP_KEYS`) so they inherit this behavior; never hardcode a translation exception in a component.
+
 ## Config Schema Notes
 
 `hero.greeting` and `hero.buttons.secondary` were removed from `src/config.ts` as dead fields — the Hero section no longer reads a separate greeting string or a secondary CTA button. Do not reintroduce them; `hero` only defines `namePrefix` and `buttons.{primary,resume,resumeLoading}`.
