@@ -27,6 +27,91 @@ import type { Locale } from "./translations";
 // project's technology stack (projects.items[].skills) — technical skill
 // terms must stay in raw English across every locale, never machine-translated.
 const SKIP_KEYS = new Set(["slug", "pageSlug", "link", "id", "skills"]);
+
+// ─── Navigation overrides ────────────────────────────────────────────────────
+// The gtx endpoint's literal, word-for-word MT is unreliable for short,
+// high-visibility UI labels — the navbar and the "Pages" section heading.
+// Literal machine translation produced amateurish or outright wrong results
+// (e.g. ES "Hogar" for Home instead of "Inicio", ZH "页数" — a page *count* —
+// for the Pages nav item instead of a term for written pieces). These are
+// low-cardinality, high-visibility strings, so we hand-maintain a small
+// professional-translation dictionary here instead of trusting MT, and apply
+// it as a post-processing pass over the translated tree. Keep this dictionary
+// in sync with NavigationStrings and engineeringPages.title — see CLAUDE.md's
+// "Navigation & Pages Translation Dictionary" section.
+type NavOverride = {
+  navigation: {
+    home: string;
+    about: string;
+    projects: string;
+    experience: string;
+    education: string;
+    pages: string;
+    contact: string;
+  };
+  engineeringPagesTitle: string;
+};
+
+const NAV_OVERRIDES: Partial<Record<Locale, NavOverride>> = {
+  es: {
+    navigation: {
+      home: "Inicio",
+      about: "Sobre mí",
+      projects: "Proyectos",
+      experience: "Experiencia",
+      education: "Educación",
+      pages: "Páginas",
+      contact: "Contacto",
+    },
+    engineeringPagesTitle: "Páginas",
+  },
+  ca: {
+    navigation: {
+      home: "Inici",
+      about: "Sobre mi",
+      projects: "Projectes",
+      experience: "Experiència",
+      education: "Educació",
+      pages: "Pàgines",
+      contact: "Contacte",
+    },
+    engineeringPagesTitle: "Pàgines",
+  },
+  fr: {
+    navigation: {
+      home: "Accueil",
+      about: "À propos",
+      projects: "Projets",
+      experience: "Expérience",
+      education: "Éducation",
+      pages: "Pages",
+      contact: "Contact",
+    },
+    engineeringPagesTitle: "Pages",
+  },
+  zh: {
+    navigation: {
+      home: "首页",
+      about: "关于",
+      projects: "项目",
+      experience: "经验",
+      education: "教育",
+      pages: "文章",
+      contact: "联系",
+    },
+    engineeringPagesTitle: "文章",
+  },
+};
+
+function applyNavOverrides(content: LocaleContent, target: Locale): LocaleContent {
+  const override = NAV_OVERRIDES[target];
+  if (!override) return content;
+  return {
+    ...content,
+    navigation: { ...content.navigation, ...override.navigation },
+    engineeringPages: { ...content.engineeringPages, title: override.engineeringPagesTitle },
+  };
+}
 const CACHE_VERSION = "v1";
 const memoryCache = new Map<string, LocaleContent>();
 
@@ -176,11 +261,15 @@ export async function translateContent(base: LocaleContent, target: Locale): Pro
   const key = cacheKey(target, base);
   const cached = memoryCache.get(key) ?? readLocalStorage(key);
   if (cached) {
-    memoryCache.set(key, cached);
-    return cached;
+    // Re-apply overrides even on a cache hit — a stale cache entry written
+    // before NAV_OVERRIDES existed would otherwise keep serving raw MT
+    // output for the navbar/Pages heading until the content hash changes.
+    const overridden = applyNavOverrides(cached, target);
+    memoryCache.set(key, overridden);
+    return overridden;
   }
 
-  const translated = (await translateNode(base, target)) as LocaleContent;
+  const translated = applyNavOverrides((await translateNode(base, target)) as LocaleContent, target);
   memoryCache.set(key, translated);
   writeLocalStorage(key, translated);
   return translated;

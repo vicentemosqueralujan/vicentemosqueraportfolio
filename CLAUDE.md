@@ -129,6 +129,27 @@ Server-rendered metadata (`generateMetadata`, `generateStaticParams` in `src/app
 
 Non-English locales are produced automatically at runtime by `translateContent()` in `src/i18n/translate.ts`, which walks the English `LocaleContent` tree and machine-translates each string leaf. `SKIP_KEYS` in that file (`slug`, `pageSlug`, `link`, `id`, `skills`) lists keys whose values are routed around translation and returned verbatim.
 
+### Navigation & Pages Translation Dictionary
+
+Raw machine translation is unreliable for short, high-visibility UI chrome — the navbar labels and the "Pages" section heading (`engineeringPages.title`). Literal MT has previously produced amateurish or outright wrong output (e.g. ES "Hogar" instead of "Inicio" for Home, ZH "页数" — a literal page *count* — instead of a term for written pieces for the Pages nav item). Because this is a small, low-cardinality set of strings, `translate.ts` hand-maintains a professional-translation dictionary (`NAV_OVERRIDES`) and applies it as a post-processing pass over the MT output — on both a fresh translation and a cache hit, so a stale cached translation never keeps serving a bad literal MT string.
+
+Canonical values (also enforced by `NAV_OVERRIDES`):
+
+| Key | ES | CA | FR | ZH |
+|---|---|---|---|---|
+| `navigation.home` | Inicio | Inici | Accueil | 首页 |
+| `navigation.about` | Sobre mí | Sobre mi | À propos | 关于 |
+| `navigation.projects` | Proyectos | Projectes | Projets | 项目 |
+| `navigation.experience` | Experiencia | Experiència | Expérience | 经验 |
+| `navigation.education` | Educación | Educació | Éducation | 教育 |
+| `navigation.pages` | Páginas | Pàgines | Pages | 文章 |
+| `navigation.contact` | Contacto | Contacte | Contact | 联系 |
+| `engineeringPages.title` | Páginas | Pàgines | Pages | 文章 |
+
+All other copy (headings, body text, project descriptions, etc.) continues to flow through unrestricted MT — only these nav/heading keys are overridden. When adding a new nav item or top-level section heading, add its correct translation to `NAV_OVERRIDES` in the same pass rather than trusting MT to get short UI labels right.
+
+Note: `generateMetadata`/`generateStaticParams` (server-rendered `<title>`/meta description tags) run outside the client `LanguageProvider` and always render the English strings regardless of locale — this is unchanged by `NAV_OVERRIDES`, which only affects the client-rendered `t` tree (navbar, `/pages` index heading, etc.), per the metadata constraint above.
+
 ### Untranslated Technical Skills
 
 Technical skill terms and technology tags must always stay in raw English, regardless of the active language (EN, ES, CA, FR, ZH):

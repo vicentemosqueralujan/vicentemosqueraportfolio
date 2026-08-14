@@ -45,6 +45,20 @@ All personal content, theme colors, and layout flags live in `src/config.ts` —
 
 Content is authored once, in English, and machine-translated at runtime for every other locale (ES, CA, FR, ZH) — see `src/i18n/translate.ts`. Technical skill terms and technology tags are the exception: `about.skills` (the "About Me" skill list) and each project's `skills` array always stay in raw English across all locales, since terms like "Docker" or "Kubernetes" shouldn't be translated. This is enforced by `SKIP_KEYS` in `src/i18n/translate.ts`, not per-component logic.
 
+The navbar labels and the "Pages" section heading are also exempt from raw MT — short UI chrome translates unreliably word-for-word, so `translate.ts` overrides them with a hand-maintained dictionary (`NAV_OVERRIDES`) applied after translation:
+
+| Key | ES | CA | FR | ZH |
+|---|---|---|---|---|
+| Home | Inicio | Inici | Accueil | 首页 |
+| About | Sobre mí | Sobre mi | À propos | 关于 |
+| Projects | Proyectos | Projectes | Projets | 项目 |
+| Experience | Experiencia | Experiència | Expérience | 经验 |
+| Education | Educación | Educació | Éducation | 教育 |
+| Pages | Páginas | Pàgines | Pages | 文章 |
+| Contact | Contacto | Contacte | Contact | 联系 |
+
+Server-rendered `<title>`/meta description tags for the `/pages` routes always render in English regardless of locale — that's a Next.js metadata constraint (see `CLAUDE.md`), not something `NAV_OVERRIDES` changes.
+
 ---
 
 ## UI Conventions
