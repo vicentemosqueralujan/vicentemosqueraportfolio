@@ -94,6 +94,13 @@ src/
     Cursor.tsx                 ← Custom cursor effect (client component)
     ScrollReveal.tsx           ← IntersectionObserver scroll animations (client component)
     TocNav.tsx                 ← Scroll-tracked ToC sidebar for /pages/[slug] (client component)
+    DownloadResumeButton.tsx   ← Client-side jsPDF résumé generator, locale-aware (see CJK PDF Export below)
+  lib/
+    pdfFonts.ts                ← CJK detection + lazy CJK font embedding for jsPDF
+public/
+  fonts/
+    NotoSansSC-Regular-subset.ttf  ← Lazy-fetched CJK font (glyf TTF) for PDF export
+    NotoSansSC-OFL.txt             ← Font license (SIL OFL 1.1)
 ```
 
 ## Theme Customization
@@ -135,6 +142,18 @@ Server-rendered metadata (`generateMetadata`, `generateStaticParams` in `src/app
 - Errors render as a `<p>` directly below the field — themed with `text-red-500`/`dark:text-red-400`, an inline warning icon, and a matching red border on the input — consistent with the light/dark design system rather than forking a separate style.
 - Email format is checked with a simple `@`/`.` regex in addition to the required-field check.
 - Error copy is never hardcoded in the component: it comes from `t.contact.form.validation` (English source in `src/config.ts`, auto-translated per locale like all other copy — see Localization Architecture above).
+
+## CJK PDF Export (Résumé)
+
+`DownloadResumeButton.tsx` renders the résumé PDF with `jsPDF` using content from `useLanguage().t`, so the export always matches whatever locale is active — including `zh`.
+
+jsPDF's built-in `helvetica` font is Latin-only; feeding it Chinese text produced mojibake / blank tofu glyphs instead of characters. `src/lib/pdfFonts.ts` addresses this:
+
+- `containsCJK(text)` — locale-agnostic regex check across all résumé strings (name, title, about, skills, experience, education) for CJK Unified Ideographs / CJK punctuation / fullwidth forms. Not hardcoded to `zh` — covers any future CJK locale.
+- `ensureCJKFont(doc)` — only when CJK text is detected, lazy-fetches a subsetted **Noto Sans SC** TTF from `public/fonts/NotoSansSC-Regular-subset.ttf` and registers it on the `jsPDF` doc via `addFileToVFS`/`addFont`. It must be a `glyf`-outline TTF — jsPDF's font engine cannot embed CFF/OTF builds (e.g. the standard Noto Sans SC OTF release does not work). The base64-encoded fetch is memoized in-module so repeat downloads in one session don't refetch the ~7 MB font.
+- The CJK font only ships a regular weight — bold/italic requests fall back to regular glyphs when CJK is active (see `setFont()` in the component); headings still read as distinct via color/size.
+- Font-load failure (offline, blocked) falls back to `helvetica` instead of throwing, with a `console.warn`.
+- Do not reintroduce a CFF/OTF CJK font, and do not inline further large font assets into components — new fonts belong in `public/fonts/` with a same-directory license file, loaded lazily like `pdfFonts.ts` does.
 
 ## Dark / Light Mode
 

@@ -78,6 +78,13 @@ src/
     Cursor.tsx                 ← Custom cursor (client)
     ScrollReveal.tsx           ← Scroll animations (client)
     TocNav.tsx                 ← Scroll-tracked ToC (client)
+    DownloadResumeButton.tsx   ← jsPDF résumé generator (client, see PDF Résumé Export below)
+  lib/
+    pdfFonts.ts                ← CJK font detection + lazy jsPDF font embedding
+public/
+  fonts/
+    NotoSansSC-Regular-subset.ttf  ← Lazy-fetched CJK font for PDF export
+    NotoSansSC-OFL.txt             ← Font license (SIL OFL 1.1)
 ```
 
 ---
@@ -90,6 +97,20 @@ src/
 - Name, Email, and Project Details are validated on submit and on blur (`onBlur`); an error clears as soon as the user types again (`onChange`).
 - Errors render as a themed message directly below the field (red text + icon, red border highlight on the input), matching light/dark mode.
 - Error copy comes from `contact.form.validation` in `src/config.ts` (`nameRequired`, `emailRequired`, `emailInvalid`, `messageRequired`) and is localized like all other content — see the Localization section above.
+
+---
+
+## PDF Résumé Export
+
+`DownloadResumeButton.tsx` generates the résumé PDF client-side with `jsPDF`, pulling copy straight from the active locale (`useLanguage().t`) so the download always matches whatever language is on screen.
+
+jsPDF's built-in `helvetica` font only covers Latin/WinAnsi glyphs — rendering Chinese (`zh`) content with it produced mojibake/blank tofu boxes instead of characters. `src/lib/pdfFonts.ts` fixes this:
+
+- `containsCJK(text)` scans the résumé's combined text (name, title, about, skills, experience, education) for CJK Unified Ideographs / CJK punctuation / fullwidth-form code points — locale-agnostic, so it also covers any future CJK locale (ja/ko), not just `zh`.
+- If CJK text is detected, `ensureCJKFont(doc)` lazy-fetches a subsetted **Noto Sans SC** TrueType font from `public/fonts/NotoSansSC-Regular-subset.ttf` (glyf-outline TTF — jsPDF can only embed `glyf` fonts, not CFF/OTF builds) and registers it into the `jsPDF` instance via `addFileToVFS` + `addFont`. The fetch is cached in-memory so repeat downloads in the same session don't refetch the ~7 MB font.
+- The font is only fetched when needed (non-CJK résumés never pay the download cost), and only covers a regular weight — bold/italic styling is dropped for CJK runs, with headings staying visually distinct via color and size instead.
+- If the font fails to load (offline, blocked request, etc.), generation falls back to `helvetica` rather than throwing, and a console warning is logged.
+- Font is Google's Noto Sans SC, SIL Open Font License 1.1 — see `public/fonts/NotoSansSC-OFL.txt`.
 
 ---
 

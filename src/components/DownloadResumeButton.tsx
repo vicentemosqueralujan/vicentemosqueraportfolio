@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { siteConfig } from "@/config";
 import { useLanguage } from "@/context/LanguageContext";
+import { containsCJK, ensureCJKFont } from "@/lib/pdfFonts";
 
 export default function DownloadResumeButton({ label }: { label: string }) {
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,33 @@ export default function DownloadResumeButton({ label }: { label: string }) {
     const margin = 18;
     const contentW = pageW - margin * 2;
     let y = 0;
+
+    // Detect whether the résumé content needs a CJK-capable font (e.g. the
+    // "zh" locale) and, if so, lazy-load + embed it. jsPDF's built-in
+    // "helvetica" font has no CJK glyphs and would render mojibake/tofu
+    // boxes for Chinese content. The bundled font only has a regular weight,
+    // so bold/italic styling is dropped for CJK text — headings stay
+    // visually distinct via color and size instead.
+    const resumeText = [
+      name,
+      title,
+      about.sectionTitle,
+      about.body,
+      about.skillsLabel,
+      ...about.skills,
+      experience.sectionTitle,
+      ...experience.items.flatMap((exp) => [exp.title, exp.dateRange, exp.company, ...exp.bullets]),
+      education.sectionTitle,
+      ...education.items.flatMap((edu) => [edu.degree, edu.dateRange, edu.school]),
+    ].join("\n");
+    const cjkFont = containsCJK(resumeText) ? await ensureCJKFont(doc) : null;
+    const setFont = (style: "normal" | "bold" | "italic" = "normal") => {
+      if (cjkFont) {
+        doc.setFont(cjkFont, "normal");
+      } else {
+        doc.setFont("helvetica", style);
+      }
+    };
 
     const hex = (h: string) => ({
       r: parseInt(h.slice(1, 3), 16),
@@ -51,11 +79,11 @@ export default function DownloadResumeButton({ label }: { label: string }) {
     // Header
     doc.setFillColor(ac.r, ac.g, ac.b);
     doc.rect(0, 0, pageW, 42, "F");
-    doc.setFont("helvetica", "bold");
+    setFont("bold");
     doc.setFontSize(22);
     doc.setTextColor(255, 255, 255);
     doc.text(name, margin, 18);
-    doc.setFont("helvetica", "normal");
+    setFont();
     doc.setFontSize(10);
     doc.text(title, margin, 27);
     const contacts = [
@@ -68,7 +96,7 @@ export default function DownloadResumeButton({ label }: { label: string }) {
 
     const sectionHeader = (t: string) => {
       checkY(10);
-      doc.setFont("helvetica", "bold");
+      setFont("bold");
       doc.setFontSize(11);
       doc.setTextColor(ac.r, ac.g, ac.b);
       doc.text(t.toUpperCase(), margin, y);
@@ -80,7 +108,7 @@ export default function DownloadResumeButton({ label }: { label: string }) {
     };
 
     const bodyText = (text: string, indent = 0) => {
-      doc.setFont("helvetica", "normal");
+      setFont();
       doc.setFontSize(9);
       doc.setTextColor(body.r, body.g, body.b);
       const lines = doc.splitTextToSize(text, contentW - indent);
@@ -100,23 +128,23 @@ export default function DownloadResumeButton({ label }: { label: string }) {
     sectionHeader(experience.sectionTitle);
     for (const exp of experience.items) {
       checkY(12);
-      doc.setFont("helvetica", "bold");
+      setFont("bold");
       doc.setFontSize(10);
       doc.setTextColor(txt.r, txt.g, txt.b);
       doc.text(exp.title, margin, y);
-      doc.setFont("helvetica", "normal");
+      setFont();
       doc.setFontSize(9);
       doc.setTextColor(sub.r, sub.g, sub.b);
       doc.text(exp.dateRange, pageW - margin - doc.getTextWidth(exp.dateRange), y);
       y += 4.5;
-      doc.setFont("helvetica", "italic");
+      setFont("italic");
       doc.setFontSize(9);
       doc.setTextColor(ac.r, ac.g, ac.b);
       doc.text(exp.company, margin, y);
       y += 5;
       for (const bullet of exp.bullets) {
         doc.setTextColor(body.r, body.g, body.b);
-        doc.setFont("helvetica", "normal");
+        setFont();
         doc.setFontSize(9);
         const lines = doc.splitTextToSize(`• ${bullet}`, contentW - 4);
         checkY(lines.length * 4.2);
@@ -129,16 +157,16 @@ export default function DownloadResumeButton({ label }: { label: string }) {
     sectionHeader(education.sectionTitle);
     for (const edu of education.items) {
       checkY(10);
-      doc.setFont("helvetica", "bold");
+      setFont("bold");
       doc.setFontSize(10);
       doc.setTextColor(txt.r, txt.g, txt.b);
       doc.text(edu.degree, margin, y);
-      doc.setFont("helvetica", "normal");
+      setFont();
       doc.setFontSize(9);
       doc.setTextColor(sub.r, sub.g, sub.b);
       doc.text(edu.dateRange, pageW - margin - doc.getTextWidth(edu.dateRange), y);
       y += 4.5;
-      doc.setFont("helvetica", "italic");
+      setFont("italic");
       doc.setFontSize(9);
       doc.setTextColor(ac.r, ac.g, ac.b);
       doc.text(edu.school, margin, y);
