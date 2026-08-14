@@ -1,4 +1,5 @@
-import { siteConfig } from "@/config";
+import { content } from "@/config";
+import { defaultLocale } from "@/i18n/translations";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -8,9 +9,9 @@ import Education from "@/components/Education";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 export default function Home() {
-  const hasProjects = siteConfig.projects.items.length > 0;
-  const hasExperience = siteConfig.experience.items.length > 0;
-  const hasEducation = siteConfig.education.items.length > 0;
+  const hasProjects = content[defaultLocale].projects.items.length > 0;
+  const hasExperience = content[defaultLocale].experience.items.length > 0;
+  const hasEducation = content[defaultLocale].education.items.length > 0;
 
   return (
     <main className="min-h-screen">

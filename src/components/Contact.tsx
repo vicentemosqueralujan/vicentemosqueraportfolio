@@ -1,10 +1,13 @@
 "use client";
 import { useState } from "react";
 import { siteConfig } from "@/config";
+import { useLanguage } from "@/context/LanguageContext";
 import { SectionLabel } from "./About";
 
 export default function Contact() {
-  const { contact, social } = siteConfig;
+  const { social, contact: contactShared } = siteConfig;
+  const { t } = useLanguage();
+  const { contact } = t;
   const [sent, setSent] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,7 +25,7 @@ export default function Contact() {
         .replace("{message}", message.trim())
     );
     const a = document.createElement("a");
-    a.href = `mailto:${contact.toEmail}?subject=${subject}&body=${body}`;
+    a.href = `mailto:${contactShared.toEmail}?subject=${subject}&body=${body}`;
     a.click();
     setName(""); setEmail(""); setMessage("");
     setSent(true);
@@ -31,20 +34,20 @@ export default function Contact() {
 
   const channels = [
     social.email && {
-      label: social.aria.email,
+      label: t.social.aria.email,
       value: social.email,
       href: `mailto:${social.email}`,
       icon: "mail",
     },
     social.linkedin && {
       label: contact.channels.linkedin.label,
-      value: contact.channels.linkedin.handle,
+      value: social.handles.linkedin,
       href: social.linkedin,
       icon: "linkedin",
     },
     social.github && {
       label: contact.channels.github.label,
-      value: contact.channels.github.handle,
+      value: social.handles.github,
       href: social.github,
       icon: "github",
     },

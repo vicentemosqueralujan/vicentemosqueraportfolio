@@ -1,8 +1,10 @@
-import { siteConfig } from "@/config";
+"use client";
+import { useLanguage } from "@/context/LanguageContext";
 import { SectionLabel } from "./About";
 
 export default function Education() {
-  const { education } = siteConfig;
+  const { t } = useLanguage();
+  const { education } = t;
 
   return (
     <section id="education" className="py-16 px-6">

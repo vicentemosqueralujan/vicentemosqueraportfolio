@@ -1,8 +1,10 @@
-import { siteConfig } from "@/config";
+"use client";
+import { useLanguage } from "@/context/LanguageContext";
 import { SectionLabel } from "./About";
 
 export default function Experience() {
-  const { experience } = siteConfig;
+  const { t } = useLanguage();
+  const { experience } = t;
 
   return (
     <section id="experience" className="py-16 px-6">

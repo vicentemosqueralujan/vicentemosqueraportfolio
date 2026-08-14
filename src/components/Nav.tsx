@@ -1,13 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { siteConfig } from "@/config";
 import { useLanguage } from "@/context/LanguageContext";
 import { locales } from "@/i18n/translations";
-
-const { projects, experience, education } = siteConfig;
-const hasProjects = projects.items.length > 0;
-const hasExperience = experience.items.length > 0;
-const hasEducation = education.items.length > 0;
 
 function SunIcon() {
   return (
@@ -55,7 +49,10 @@ function MenuIcon({ open }: { open: boolean }) {
 
 export default function Nav() {
   const { locale, setLocale, t } = useLanguage();
-  const { navigation } = t;
+  const { navigation, projects, experience, education } = t;
+  const hasProjects = projects.items.length > 0;
+  const hasExperience = experience.items.length > 0;
+  const hasEducation = education.items.length > 0;
   const [isDark, setIsDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

@@ -19,11 +19,11 @@ Help users:
 
 ## Operational Rules
 
-1. **Always edit `src/config.ts` first.** Direct the user there before touching any component.
+1. **Always edit `src/config.ts` first.** Direct the user there before touching any component — specifically, edit the localized `LocaleContent`/`translations` structures for user-facing copy, not `siteConfig`.
 2. **Protect components.** Only modify files under `src/components/` or `src/app/` if the user explicitly requests a design or layout change.
 3. **Enforce TypeScript types.** New projects, experience, education, or engineering pages must conform to the `Project`, `Experience`, `Education`, and `EngineeringPage` interfaces in `src/config.ts`.
 4. **Maintain the design language.** When suggesting Tailwind classes, match the Apple-inspired SaaS Studio light/dark aesthetic — centralized typography, ambient radial gradients, balanced negative space. Do not introduce external component libraries.
-5. **No hardcoded text in components.** All user-facing strings must originate from `src/config.ts`. Never write literal names, titles, or labels directly into component JSX.
+5. **No hardcoded text in components.** All user-facing strings must originate from `src/config.ts` and be consumed via `useLanguage().t`. Never write literal names, titles, or labels directly into component JSX.
 6. **Keep section spacing uniform.** Use the established section padding rhythm. Do not add ad-hoc margin/padding overrides that break vertical balance.
 7. **No structural clutter.** Do not reintroduce sidebar social layouts, macOS mockup decorations, or asymmetric card grids. The canonical layout is centered, streamlined, and minimal.
 8. **Single-column project layout.** `Projects.tsx` cards render one per line (stacked), never a multi-column grid.
@@ -106,6 +106,19 @@ accentColorDark:  "#a855f7",  // used in dark mode
 ```
 
 Propagates automatically via `--accent-color` CSS custom property. No other files need editing.
+
+## Localization Architecture (src/config.ts & i18n)
+
+`src/config.ts` is split into two parts:
+
+- **`siteConfig`** — shared, locale-independent data: `name`, `accentColorLight`/`accentColorDark`, social URLs, image paths, and other values that never change between languages.
+- **`LocaleContent`** (type) — the full shape of translatable copy (navigation, hero, about, projects, experience, education, contact, footer, pages, aria labels, etc.). Each locale's concrete content lives in `src/i18n/translations.ts` as `translations.en` / `translations.es`, both conforming to `LocaleContent`.
+
+Components no longer read static strings off `siteConfig`. Instead they call `useLanguage()` (from `src/context/LanguageContext.tsx`) and consume `t`, e.g. `const { t } = useLanguage(); t.hero.buttons.primary`. `LanguageProvider` holds the active `locale` in state (persisted to `localStorage` under `"language"`, initialized from that stored value or the default locale) and exposes `t = translations[locale]`.
+
+Switching locale (via the navbar language switcher) calls `setLocale`, which updates state and `localStorage`, and a `LanguageProvider` effect sets `document.documentElement.lang = locale`. Because `t` is derived from React state, every consuming component — Hero, About, Projects, Experience, Education, Contact, Footer, Nav, and the `/pages` index and `/pages/[slug]` detail views — re-renders instantly with the new language. No page reload occurs.
+
+Server-rendered metadata (`generateMetadata`, `generateStaticParams` in `src/app/pages/[slug]/page.tsx` and elsewhere) runs outside the client `LanguageProvider` and has no access to the active locale, so it always defaults to the English strings for SEO purposes (page titles, descriptions).
 
 ## Config Schema Notes
 

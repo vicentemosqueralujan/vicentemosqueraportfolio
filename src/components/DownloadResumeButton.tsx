@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import { siteConfig } from "@/config";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function DownloadResumeButton({ label }: { label: string }) {
   const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
   const handleDownload = async () => {
     setLoading(true);
     const { jsPDF } = await import("jspdf");
-    const { accentColorLight, accentColorDark, name, title, social, about, experience, education } = siteConfig;
+    const { accentColorLight, accentColorDark, name, social } = siteConfig;
+    const { title, about, experience, education } = t;
 
     const isDark = document.documentElement.classList.contains("dark");
 
@@ -86,15 +89,15 @@ export default function DownloadResumeButton({ label }: { label: string }) {
       y += lines.length * 4.5;
     };
 
-    sectionHeader("Profile");
+    sectionHeader(about.sectionTitle);
     bodyText(about.body);
     y += 4;
 
-    sectionHeader("Skills");
+    sectionHeader(about.skillsLabel);
     bodyText(about.skills.join("  ·  "));
     y += 4;
 
-    sectionHeader("Experience");
+    sectionHeader(experience.sectionTitle);
     for (const exp of experience.items) {
       checkY(12);
       doc.setFont("helvetica", "bold");
@@ -123,7 +126,7 @@ export default function DownloadResumeButton({ label }: { label: string }) {
       y += 3;
     }
 
-    sectionHeader("Education");
+    sectionHeader(education.sectionTitle);
     for (const edu of education.items) {
       checkY(10);
       doc.setFont("helvetica", "bold");
@@ -170,7 +173,7 @@ export default function DownloadResumeButton({ label }: { label: string }) {
           <path d="M12 4v12" />
         </svg>
       )}
-      {loading ? siteConfig.hero.buttons.resumeLoading : label}
+      {loading ? t.hero.buttons.resumeLoading : label}
     </button>
   );
 }

@@ -1,4 +1,5 @@
-import { siteConfig } from "@/config";
+"use client";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -11,18 +12,21 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export default function About() {
+  const { t } = useLanguage();
+  const { about } = t;
+
   return (
     <section id="about" className="py-12 px-6">
       <div className="max-w-6xl mx-auto">
-        <SectionLabel>{siteConfig.about.sectionTitle}</SectionLabel>
+        <SectionLabel>{about.sectionTitle}</SectionLabel>
         <div className="grid md:grid-cols-2 gap-14 items-start">
           <p className="reveal text-base text-neutral-500 dark:text-neutral-400 leading-relaxed">
-            {siteConfig.about.body}
+            {about.body}
           </p>
           <div className="reveal">
-            <p className="text-xs text-neutral-400 dark:text-neutral-500 uppercase tracking-widest mb-5">{siteConfig.about.skillsLabel}</p>
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 uppercase tracking-widest mb-5">{about.skillsLabel}</p>
             <div className="flex flex-wrap gap-2">
-              {siteConfig.about.skills.map((skill) => (
+              {about.skills.map((skill) => (
                 <span
                   key={skill}
                   className="px-3 py-1.5 text-xs font-medium rounded-full border transition-colors duration-200"

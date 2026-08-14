@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import { siteConfig } from "@/config";
+import { useLanguage } from "@/context/LanguageContext";
 import DownloadResumeButton from "@/components/DownloadResumeButton";
 
 function EmailIcon() {
@@ -30,7 +32,9 @@ function GitHubIcon() {
 }
 
 export default function Hero() {
-  const { hero, name, title, social } = siteConfig;
+  const { name, social, hero: heroShared } = siteConfig;
+  const { t } = useLanguage();
+  const { hero, title } = t;
 
   return (
     <section
@@ -77,7 +81,7 @@ export default function Hero() {
             <div className="animate-fade-in-up animate-fade-in-up-d3 flex items-center justify-center md:justify-start gap-3">
               <a
                 href={`mailto:${social.email}`}
-                aria-label={social.aria.email}
+                aria-label={t.social.aria.email}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
               >
                 <EmailIcon />
@@ -86,7 +90,7 @@ export default function Hero() {
                 href={social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.aria.linkedin}
+                aria-label={t.social.aria.linkedin}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
               >
                 <LinkedInIcon />
@@ -95,7 +99,7 @@ export default function Hero() {
                 href={social.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.aria.github}
+                aria-label={t.social.aria.github}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700/60 shadow-sm text-neutral-500 dark:text-neutral-400 hover:text-[var(--accent-color)] dark:hover:text-[var(--accent-color)] hover:-translate-y-0.5 transition-all duration-200"
               >
                 <GitHubIcon />
@@ -104,11 +108,11 @@ export default function Hero() {
           </div>
 
           {/* Portrait */}
-          {hero.image && (
+          {heroShared.image && (
             <div className="flex-shrink-0 flex justify-center md:justify-end self-center md:self-end">
               <div className="hero-portrait w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80">
                 <Image
-                  src={hero.image}
+                  src={heroShared.image}
                   alt={hero.imageAlt}
                   width={320}
                   height={320}

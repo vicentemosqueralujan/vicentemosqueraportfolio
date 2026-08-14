@@ -1,11 +1,13 @@
+"use client";
 import { siteConfig } from "@/config";
-
-const { navigation, projects, experience, education } = siteConfig;
-const hasProjects = projects.items.length > 0;
-const hasExperience = experience.items.length > 0;
-const hasEducation = education.items.length > 0;
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+  const { navigation, projects, experience, education, footer } = t;
+  const hasProjects = projects.items.length > 0;
+  const hasExperience = experience.items.length > 0;
+  const hasEducation = education.items.length > 0;
   const year = new Date().getFullYear();
 
   return (
@@ -19,11 +21,11 @@ export default function Footer() {
               {siteConfig.name}
             </h3>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-xs">
-              {siteConfig.title}
+              {t.title}
             </p>
             <div className="flex gap-4 text-gray-500 dark:text-gray-500">
               {siteConfig.social?.email && (
-                <a href={`mailto:${siteConfig.social.email}`} aria-label={siteConfig.social.aria.email} className="hover:text-[var(--accent-color)] transition-colors duration-200 hover:scale-110">
+                <a href={`mailto:${siteConfig.social.email}`} aria-label={t.social.aria.email} className="hover:text-[var(--accent-color)] transition-colors duration-200 hover:scale-110">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
@@ -32,7 +34,7 @@ export default function Footer() {
                 </a>
               )}
               {siteConfig.social?.linkedin && (
-                <a href={siteConfig.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={siteConfig.social.aria.linkedin} className="hover:text-[var(--accent-color)] transition-colors duration-200 hover:scale-110">
+                <a href={siteConfig.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={t.social.aria.linkedin} className="hover:text-[var(--accent-color)] transition-colors duration-200 hover:scale-110">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" />
@@ -42,7 +44,7 @@ export default function Footer() {
                 </a>
               )}
               {siteConfig.social?.github && (
-                <a href={siteConfig.social.github} target="_blank" rel="noopener noreferrer" aria-label={siteConfig.social.aria.github} className="hover:text-[var(--accent-color)] transition-colors duration-200 hover:scale-110">
+                <a href={siteConfig.social.github} target="_blank" rel="noopener noreferrer" aria-label={t.social.aria.github} className="hover:text-[var(--accent-color)] transition-colors duration-200 hover:scale-110">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" />
@@ -70,12 +72,12 @@ export default function Footer() {
               <a href="/#contact" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200 hover:-translate-y-px">{navigation.contact}</a>
             </nav>
             <p className="text-xs text-gray-400 dark:text-gray-600">
-              © {year} {siteConfig.name}. {siteConfig.footer.copyright}
+              © {year} {siteConfig.name}. {footer.copyright}
             </p>
             <p className="text-xs text-gray-400 dark:text-gray-700">
-              {siteConfig.footer.builtWithLabel}{" "}
+              {footer.builtWithLabel}{" "}
               <a href={siteConfig.footer.builtWithUrl} className="hover:text-gray-600 dark:hover:text-gray-500 transition-colors">
-                {siteConfig.footer.builtWithName}
+                {footer.builtWithName}
               </a>
             </p>
           </div>
